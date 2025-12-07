@@ -4,8 +4,10 @@ using UnityEngine;
 
 public class MatchManager : MonoBehaviour
 {
-    [SerializeField] Transform[] safePoints;
-    [SerializeField] Piece[] pieces;
+    public static MatchManager Instance;
+
+    public Transform[] safePoints;
+    public Piece[] pieces;
     [SerializeField] Dice dice;
 
     [SerializeField] int currentTurn = 0;
@@ -15,7 +17,9 @@ public class MatchManager : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        if (Instance == null) {
+            Instance = this;
+        }
     }
 
     // Update is called once per frame

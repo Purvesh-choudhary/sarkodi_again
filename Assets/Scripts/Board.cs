@@ -11,7 +11,7 @@ public class Board : MonoBehaviour
     [SerializeField] Transform[] blue_path;
     [SerializeField] Transform[] yellow_path;
 
-
+    
  
 
     // Start is called before the first frame update

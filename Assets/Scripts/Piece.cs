@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using UnityEngine;
 
 public enum Team
@@ -27,6 +28,16 @@ public class Piece : MonoBehaviour
             yield return StartCoroutine(Move(currentLoc));
             stepsTaken++;
         }
+
+        Piece[] pieces = MatchManager.Instance.pieces;
+        foreach(Piece p in pieces)
+        {
+            if(p.GetCurrentPosition() == GetCurrentPosition() && p.team != team && !IsInSafePos())
+            {
+                Debug.Log($"same pos - Kill");
+                p.Kill();
+            }
+        }
     }
 
     IEnumerator Move(int moveTo)
@@ -35,8 +46,27 @@ public class Piece : MonoBehaviour
         transform.position = path[moveTo].position;       
     }
 
+    void Kill()
+    {
+        currentLoc = 0;
+        StartCoroutine(Move(currentLoc));
+    }
+
+
+
     public Transform GetCurrentPosition()
     {
         return path[currentLoc];
+    }
+
+    public bool IsInSafePos()
+    {
+
+        foreach(Transform t in MatchManager.Instance.safePoints)
+        {
+            if(t == GetCurrentPosition());
+                return true;
+        }
+        return false;       
     }
 }
