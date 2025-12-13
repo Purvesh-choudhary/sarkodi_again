@@ -1,26 +1,24 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
-public enum Team
-{
-    red,
-    green,
-    blue,
-    yellow
-}
 
 public class Piece : MonoBehaviour
 {
-    [SerializeField] Team team;
-    [SerializeField] Transform[] path;
+
+    public Player player;
+
     [SerializeField] int currentLoc = 0;
-    [SerializeField] float moveSpeed = 0.3f;
+
+    void Start()
+    {
+        RegisterPoint();
+    }
 
     public IEnumerator TakeSteps(int totalStepsToTake)
     {
+        UnregisterPoint();
+        
         int stepsTaken = 0;
         while (stepsTaken <totalStepsToTake)
         {
@@ -29,44 +27,72 @@ public class Piece : MonoBehaviour
             stepsTaken++;
         }
 
-        Piece[] pieces = MatchManager.Instance.pieces;
-        foreach(Piece p in pieces)
-        {
-            if(p.GetCurrentPosition() == GetCurrentPosition() && p.team != team && !IsInSafePos())
+        // Can Kill?
+        if(!IsInSafePos()){
+            List<Piece> pieces = GetCurrentPathPointPieces();
+            foreach(Piece p in pieces) 
             {
-                Debug.Log($"same pos - Kill");
-                p.Kill();
+                if(p.GetCurrentPosition() == GetCurrentPosition() && p.player.team != player.team)
+                {
+                    Debug.Log($"same pos - Kill");
+                    p.Kill();
+                    break;
+                }
             }
         }
+
+        
+        
+        RegisterPoint();
+        MatchManager.Instance.ChangeTurn();
     }
 
     IEnumerator Move(int moveTo)
     {
-        yield return new WaitForSeconds(moveSpeed);
-        transform.position = path[moveTo].position;       
+        yield return new WaitForSeconds(player.moveSpeed);
+        transform.position = player.path[moveTo].position;       
     }
 
-    void Kill()
+    public void Kill()
     {
         currentLoc = 0;
         StartCoroutine(Move(currentLoc));
     }
 
+    public void OnMouseDown()
+    {
+        Debug.Log($"CLicked");
+        if(player.canPlay)
+            StartCoroutine(TakeSteps(player.stepsCanTake));
+        player.EndTurn();
+    }
 
+
+
+    // ------  Helpers Methods  ----- //
 
     public Transform GetCurrentPosition()
     {
-        return path[currentLoc];
+        return player.path[currentLoc];
     }
 
     public bool IsInSafePos()
     {
+        return GetCurrentPosition().GetComponent<Point>().isSafePoint;      
+    }
 
-        foreach(Transform t in MatchManager.Instance.safePoints)
-        {
-            if(t == GetCurrentPosition());
-                return true;
-        }
-        return false;       
+    void RegisterPoint()
+    {
+        GetCurrentPosition().GetComponent<Point>().AddPiece(this);      
+    }
+
+    void UnregisterPoint()
+    {
+        GetCurrentPosition().GetComponent<Point>().RemovePiece(this);      
+    }
+
+    List<Piece> GetCurrentPathPointPieces()
+    {
+        return GetCurrentPosition().GetComponent<Point>().GetPieces();
     }
 }

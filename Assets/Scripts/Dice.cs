@@ -12,21 +12,11 @@ public class Dice : MonoBehaviour
     [SerializeField] SpriteRenderer spriteRenderer;
     public int diceValue = 0;
 
-    // Start is called before the first frame update
     void Start()
     {
         animator = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
-
-    // // Update is called once per frame
-    // void Update()
-    // {
-    //     if (Input.GetKeyDown(KeyCode.Space))
-    //     {
-    //         StartCoroutine(Roll());
-    //     }
-    // }
 
     public IEnumerator Roll()
     {

@@ -1,18 +1,19 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class MatchManager : MonoBehaviour
 {
     public static MatchManager Instance;
 
-    public Transform[] safePoints;
-    public Piece[] pieces;
+    public Player[] player;
     [SerializeField] Dice dice;
 
     [SerializeField] int currentTurn = 0;
+    [SerializeField] bool isDebugDice; 
 
-    bool canPlay = true;
+    bool canRoll = true;
 
     // Start is called before the first frame update
     void Start()
@@ -25,7 +26,7 @@ public class MatchManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canPlay)
+        if (Input.GetKeyDown(KeyCode.Space) && canRoll)
         {
             StartCoroutine(Play());
         }
@@ -33,14 +34,20 @@ public class MatchManager : MonoBehaviour
 
     IEnumerator Play()
     {
-        canPlay = false;
-        yield return StartCoroutine(dice.Roll());
-        StartCoroutine(pieces[currentTurn].TakeSteps(dice.diceValue));
+        Debug.Log("Current Turn - "+ player[currentTurn].team);
+        canRoll = false;
+        if(!isDebugDice) yield return StartCoroutine(dice.Roll());
+
+        player[currentTurn].StartTurn(dice.diceValue);
+    }
+
+    public void ChangeTurn()
+    {
         currentTurn++;
-        if (currentTurn > 3)
+        if (currentTurn >= player.Length)
         {
             currentTurn = 0;
         }
-        canPlay = true;
+        canRoll = true;  
     }
 }
