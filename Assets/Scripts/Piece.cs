@@ -7,8 +7,7 @@ public class Piece : MonoBehaviour
 {
 
     public Player player;
-
-    [SerializeField] int currentLoc = 0;
+    [SerializeField] int currentLoc = 0; 
 
     void Start()
     {
@@ -50,13 +49,17 @@ public class Piece : MonoBehaviour
     IEnumerator Move(int moveTo)
     {
         yield return new WaitForSeconds(player.moveSpeed);
+        AudioManager.Instance.Move();
         transform.position = player.path[moveTo].position;       
     }
 
     public void Kill()
     {
+        AudioManager.Instance.Kill();
+        UnregisterPoint();
         currentLoc = 0;
         StartCoroutine(Move(currentLoc));
+        RegisterPoint();
     }
 
     public void OnMouseDown()

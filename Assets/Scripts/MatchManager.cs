@@ -8,34 +8,34 @@ public class MatchManager : MonoBehaviour
     public static MatchManager Instance;
 
     public Player[] player;
+    [SerializeField] Transform[] dicePos;
     [SerializeField] Dice dice;
 
     [SerializeField] int currentTurn = 0;
     [SerializeField] bool isDebugDice; 
 
-    bool canRoll = true;
+    public bool canRoll = true;
 
-    // Start is called before the first frame update
+
     void Start()
     {
         if (Instance == null) {
             Instance = this;
         }
+        dice.transform.position = dicePos[currentTurn].position;
+
     }
 
-    // Update is called once per frame
-    void Update()
+    public void PlayGame()
     {
-        if (Input.GetKeyDown(KeyCode.Space) && canRoll)
-        {
-            StartCoroutine(Play());
-        }
+        StartCoroutine(Play());
     }
 
     IEnumerator Play()
     {
         Debug.Log("Current Turn - "+ player[currentTurn].team);
         canRoll = false;
+        // dice.transform.position = dicePos[currentTurn].position;
         if(!isDebugDice) yield return StartCoroutine(dice.Roll());
 
         player[currentTurn].StartTurn(dice.diceValue);
@@ -48,6 +48,9 @@ public class MatchManager : MonoBehaviour
         {
             currentTurn = 0;
         }
+        dice.transform.position = dicePos[currentTurn].position;
         canRoll = true;  
     }
+
+
 }
