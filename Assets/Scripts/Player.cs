@@ -16,7 +16,7 @@ public class Player : MonoBehaviour
 {
     public Team team;
 
-    [SerializeField] Piece[] pieces;
+    [SerializeField] List<Piece> pieces;
     public Transform[] path;
     public float moveSpeed = 0.3f;
 
@@ -56,25 +56,12 @@ public class Player : MonoBehaviour
         canPlay = false;
     }
 
-    // public Transform GetCurrentPosition(int pathIndex)
-    // {
-    //     return path[pathIndex];
-    // }
-
-    // public void RegisterPoint(int pathIndex , Piece piece)
-    // {
-    //     GetCurrentPosition(pathIndex).GetComponent<Point>().AddPiece(piece);      
-    // }
-
-    // public void UnregisterPoint(int pathIndex , Piece piece)
-    // {
-    //     GetCurrentPosition(pathIndex).GetComponent<Point>().RemovePiece(piece);      
-    // }
-
-    
-    // public bool IsInSafePos(int pathIndex)
-    // {
-    //     return GetCurrentPosition(pathIndex).GetComponent<Point>().isSafePoint;      
-    // }
+    public void ReachedGoal(Piece piece)
+    {
+        if (pieces.Contains(piece))
+        {
+            pieces.Remove(piece);
+        }
+    }
 
 }

@@ -43,6 +43,12 @@ public class Piece : MonoBehaviour
         
         
         RegisterPoint();
+        
+        if(IsGoalPoint())
+        {
+            player.ReachedGoal(this);    
+        }
+
         MatchManager.Instance.ChangeTurn();
     }
 
@@ -73,6 +79,7 @@ public class Piece : MonoBehaviour
 
 
     // ------  Helpers Methods  ----- //
+    
 
     public Transform GetCurrentPosition()
     {
@@ -97,5 +104,10 @@ public class Piece : MonoBehaviour
     List<Piece> GetCurrentPathPointPieces()
     {
         return GetCurrentPosition().GetComponent<Point>().GetPieces();
+    }
+
+    bool IsGoalPoint()
+    {
+        return GetCurrentPosition().GetComponent<Point>().isGoalPoint;      
     }
 }

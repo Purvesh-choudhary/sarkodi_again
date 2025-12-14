@@ -15,6 +15,7 @@ public class MatchManager : MonoBehaviour
     [SerializeField] bool isDebugDice; 
 
     public bool canRoll = true;
+    bool isDoubleChance;
 
 
     void Start()
@@ -38,11 +39,26 @@ public class MatchManager : MonoBehaviour
         // dice.transform.position = dicePos[currentTurn].position;
         if(!isDebugDice) yield return StartCoroutine(dice.Roll());
 
+        if(dice.diceValue == 4 || dice.diceValue == 8)
+        {
+            isDoubleChance = true;
+        }
+        else
+        {
+            isDoubleChance = false;
+        }
+
         player[currentTurn].StartTurn(dice.diceValue);
     }
 
     public void ChangeTurn()
     {
+        if (isDoubleChance)
+        {
+            canRoll = true;
+            return;
+        } 
+
         currentTurn++;
         if (currentTurn >= player.Length)
         {
@@ -51,6 +67,8 @@ public class MatchManager : MonoBehaviour
         dice.transform.position = dicePos[currentTurn].position;
         canRoll = true;  
     }
+
+
 
 
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Point : MonoBehaviour
 {
     public bool isSafePoint;
+    public bool isGoalPoint;
     [SerializeField] List<Piece> pieces = new List<Piece>();
 
     [Header("Stack Settings")]
